@@ -3,6 +3,7 @@ const request = require('request')
 const queryString = require('querystring')
 const PacProxyAgent = require('pac-proxy-agent')
 const zlib = require('zlib')
+const randomIp = require('chinese-random-ip')
 
 // request.debug = true // 开启可看到更详细信息
 
@@ -39,7 +40,7 @@ const createRequest = (method, url, data, options) => {
       headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if (url.includes('music.163.com'))
       headers['Referer'] = 'https://music.163.com'
-    // headers['X-Real-IP'] = '118.88.88.88'
+    headers['X-Real-IP'] = randomIp.getChineseIp()
 
     if (typeof options.cookie === 'object')
       headers['Cookie'] = Object.keys(options.cookie)
@@ -100,7 +101,7 @@ const createRequest = (method, url, data, options) => {
     const answer = { status: 500, body: {}, cookie: [] }
     const settings = {
       method: method,
-      url: url,
+      url: url.replace(/^https/, 'http'),
       headers: headers,
       body: queryString.stringify(data)
     }
